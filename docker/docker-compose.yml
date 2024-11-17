@@ -1,0 +1,17 @@
+services:
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+    expose:
+      - 27017
+      
+  room_collector:
+    build: ./room_collector
+    depends_on:
+      - "mongodb"
+
+  room_api:
+    build: ./room_api
+    depends_on:
+      - "mongodb"
