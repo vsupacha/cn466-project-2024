@@ -15,10 +15,10 @@ const char* password = "1234567890";
 // MQTT server credentials
 const char* mqttServer = "mqtt.eclipseprojects.io";
 const int mqttPort = 1883;
-const char* mqttTopic = "TU/CN417/tsimcam/supakrit-cam";
+const char* mqttTopic = "TU/CN466/tsimcam/room422";
 
 // Brightness threshold
-const uint64_t BRIGHTNESS_THRESHOLD = 3500000; // Adjust this value based on your requirements
+const uint64_t BRIGHTNESS_THRESHOLD = 100; // Adjust this value based on your requirements
 
 // WiFi and MQTT clients
 WiFiClient wifiClient;
@@ -90,6 +90,8 @@ void loop() {
   for (int i = 0; i < buf_sz; i++) {
     sum_color += buf[i];
   }
+
+  sum_color/=buf_sz;
 
   // Get the timestamp (in milliseconds since start)
   unsigned long timestamp = millis();
