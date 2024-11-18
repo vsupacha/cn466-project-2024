@@ -15,3 +15,9 @@ services:
     build: ./room_api
     depends_on:
       - "mongodb"
+
+  room_ui:
+    build: ./room_ui
+    depends_on:
+      - "room_collector"
+      - "room_api"
