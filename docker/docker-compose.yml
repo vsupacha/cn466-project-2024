@@ -3,11 +3,16 @@ services:
     image: mongo
     ports:
       - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=1234
     expose:
       - 27017
       
   room_collector:
     build: ./room_collector
+    ports:
+      - "5001:5001"
     depends_on:
       - "mongodb"
 

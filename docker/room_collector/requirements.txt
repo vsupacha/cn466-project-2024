@@ -1,2 +1,4 @@
 paho-mqtt
+pymongo
+uvicorn
 python-dotenv
