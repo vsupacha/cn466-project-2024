@@ -28,7 +28,8 @@ def connect_mqtt():
         tsimcam = db.rooms
         doc = {
             "timestamp" : payload["timestamp"],
-            "status" : payload["status"]
+            "status" : payload["status"],
+            "room_id": topic.split("TU/CN466/tsimcam/room")[-1]
             }
         tsimcam.insert_one(doc)
             
