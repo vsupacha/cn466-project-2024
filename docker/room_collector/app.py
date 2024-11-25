@@ -8,7 +8,7 @@ import os
 
 MQTT_BROKER ="mqtt.eclipseprojects.io"
 MQTT_PORT = 1883
-MQTT_SUB_TOPIC = "TU/CN466/tsimcam"
+MQTT_SUB_TOPIC = "TU/CN466/tsimcam/#"
 MQTT_PUB_TOPIC = "TU/CN466/tsimcam"
 
 def connect_mqtt():
@@ -24,8 +24,8 @@ def connect_mqtt():
         payload = json.loads(msg.payload.decode('utf-8'))
         print(topic, payload)
         print("Create new document")
-        db = mongoClient.test_db
-        tsimcam = db.test_col
+        db = mongoClient.db
+        tsimcam = db.rooms
         doc = {
             "timestamp" : payload["timestamp"],
             "status" : payload["status"]
@@ -44,12 +44,9 @@ passwd = os.getenv("MONGO_INITDB_ROOT_PASSWORD")
 port = 27017
 mongoClient = MongoClient(host=host, port=port, username=user, password=passwd)
 mqttClient = connect_mqtt()
-count = 0
+
 while True:
     time.sleep(3)
-    payload = {"command":"create" ,"timestamp":"test" ,"status":count }
-    mqttClient.publish(MQTT_PUB_TOPIC, json.dumps(payload))
     mqttClient.loop()
-    count += 1
 
     
