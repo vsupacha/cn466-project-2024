@@ -1,4 +1,4 @@
-from flask import Blueprintม ,jsonify
+from flask import Blueprint ,jsonify
 from utils.mongodb import mongo_room_list
 
 # Initialize the blueprint for image handling
