@@ -16,11 +16,10 @@ def room_list():
 
 @room_blueprint.route("/status/<room_id>", methods=["GET"])
 def room_latest(room_id: str, q: Union[str, None] = None):
-    # try:
-    rooms = mongo_room_by_id(room_id)
-    if rooms:
-        # rooms.sort("timestamp", -1).limit(1)
-        return jsonify({"rooms": rooms})
-    return jsonify({"status":"NOT FOUND"}), 404
-    # except Exception as err :
-    #     return jsonify({"status":"ERROR"}), 500
+    try:
+        rooms = mongo_room_by_id(room_id)
+        if rooms:
+            return jsonify({"rooms": rooms})
+        return jsonify({"status":"NOT FOUND"}), 404
+    except Exception as err :
+        return jsonify({"status":"ERROR"}), 500
