@@ -17,6 +17,8 @@ services:
       - "mongodb"
 
   room_api:
+    ports:
+      - "5002:5002"
     build: ./room_api
     depends_on:
       - "mongodb"
