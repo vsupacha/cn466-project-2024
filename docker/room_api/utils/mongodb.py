@@ -30,7 +30,7 @@ def mongo_room_by_id(room_id):
     """Get room by ID."""
     db = mongo_connect()
     try:
-        room = db.rooms.find_one({"_id": ObjectId(room_id)})
+        room = db.rooms.find({"room_id": room_id}).sort("timestamp", -1).limit(1)
         if room:
             return dumps(room)  # Converts the BSON document to JSON
         return None
