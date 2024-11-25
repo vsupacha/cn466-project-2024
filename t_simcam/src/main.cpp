@@ -73,7 +73,7 @@ void setup() {
 }
 
 void loop() {
-  static uint8_t buf[160*120*2] = {0};
+  static uint8_t buf[160 * 120 * 2] = {0};
   uint64_t sum_color = 0;
 
   // Ensure WiFi connection
@@ -91,35 +91,47 @@ void loop() {
     sum_color += buf[i];
   }
 
-  sum_color/=buf_sz;
-
-  // Get the timestamp (in milliseconds since start)
-  unsigned long timestamp = millis();
+  sum_color /= buf_sz;
 
   // Display the current brightness value
   Serial.printf("Current Bright Value: %llu\n", sum_color);
 
+  // Determine status based on brightness threshold
+  int status = (sum_color > BRIGHTNESS_THRESHOLD) ? 1 : 0;
+
   // Check for state transition
-  if (sum_color > BRIGHTNESS_THRESHOLD) {
-    if (!isBright) { // Transition from dark to bright
-      isBright = true;
+  if (status == 1 && !isBright) { // Transition from OFF to ON
+    isBright = true;
 
-      // Send only timestamp and bright value
-      char message[100];
-      snprintf(message, sizeof(message),
-               "{\n"
-               "  \"timestamp\": %lu,\n"
-               "  \"bright_value\": %llu\n"
-               "}", 
-               timestamp, sum_color);
+    // Send MQTT message with status = 1
+    char message[100];
+    snprintf(message, sizeof(message),
+             "{\n"
+             "  \"timestamp\": %lu,\n"
+             "  \"status\": 1\n"
+             "}",
+             millis());
 
-      mqttClient.publish(mqttTopic, message);
+    mqttClient.publish(mqttTopic, message);
 
-      // Debug message
-      Serial.printf("Transition to bright detected. Timestamp: %lu, Bright Value: %llu\n", timestamp, sum_color);
-    }
-  } else {
-    isBright = false; // Now dark
+    // Debug message
+    Serial.printf("Transition to ON detected. Timestamp: %lu, Status: 1\n", millis());
+  } else if (status == 0 && isBright) { // Transition from ON to OFF
+    isBright = false;
+
+    // Send MQTT message with status = 0
+    char message[100];
+    snprintf(message, sizeof(message),
+             "{\n"
+             "  \"timestamp\": %lu,\n"
+             "  \"status\": 0\n"
+             "}",
+             millis());
+
+    mqttClient.publish(mqttTopic, message);
+
+    // Debug message
+    Serial.printf("Transition to OFF detected. Timestamp: %lu, Status: 0\n", millis());
   }
 
   delay(1000);
