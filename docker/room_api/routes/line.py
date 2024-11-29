@@ -4,6 +4,7 @@ from utils.mongodb import mongo_room_list, mongo_room_by_id
 load_dotenv()
 
 from flask import request, abort, Blueprint, template_rendered
+import json
 
 from linebot.v3 import (
     WebhookHandler
@@ -30,10 +31,6 @@ line_blueprint = Blueprint('line', __name__)
 
 configuration = Configuration(access_token=os.environ['CHANNEL_ACCESS_TOKEN'])
 handler = WebhookHandler(os.environ['CHANNEL_SECRET'])
-
-@line_blueprint.route("/liff")
-def liff():
-    return template_rendered("index.html", liff_id=os.environ["LIFF_ID"])
 
 @line_blueprint.route("/callback", methods=['POST'])
 def callback():
@@ -67,26 +64,39 @@ def handle_message(event):
 
 def create_reply(user_message):
     if user_message == "#list":
-        rooms = mongo_room_list()  # Get all unique rooms
+        rooms_json = mongo_room_list()  # Get all unique rooms
 
-        if rooms:  # Ensure rooms are returned as a list of dictionaries
+        if rooms_json:  # Ensure rooms are returned as a JSON string
+            rooms = json.loads(rooms_json)  # Parse JSON string into a Python object (list of dictionaries)
+            
             # Create a list of rooms to display
             reply_text = "Here are the rooms:\n"
             for room in rooms:
-                # Assuming room is a dictionary, and it has keys 'room_id' and 'status'
-                status = map_status(room['status'])  # Map the status to a user-friendly message
-                reply_text += f"Room {room['room_id']} - {status}\n"
+                if isinstance(room, dict) and 'room_id' in room and 'status' in room:
+                    status = map_status(room['status'])  # Map the status to a user-friendly message
+                    reply_text += f"Room {room['room_id']} - {status}\n"
+                else:
+                    reply_text += "Error with room data.\n"
         else:
             reply_text = "Sorry, I couldn't find any rooms."
     
     elif user_message.startswith("#room_id"):  # Corrected to `startswith`
         room_id = user_message.split()[1]  # Extract room_id from the message
-        room = mongo_room_by_id(room_id)  # Fetch room by room_id
+        room_json = mongo_room_by_id(room_id)  # Fetch room by room_id
         
-        if room:  # Ensure room is found before using it
-            # Assuming room is a dictionary and has the 'status' field
-            status = map_status(room['status'])  # Convert status to user-friendly string
-            reply_text = f"The status of Room {room['room_id']} is {status}."
+        if room_json:  # Ensure room is found before using it
+            room = json.loads(room_json)  # Parse JSON string into a Python object (list or dictionary)
+            
+            # Check if room is a list (MongoDB query result might return a list)
+            if isinstance(room, list) and len(room) > 0:
+                room = room[0]  # Get the first item in the list (which should be the room dictionary)
+            
+            # Now we can safely access room['status'] if it's a dictionary
+            if isinstance(room, dict) and 'room_id' in room and 'status' in room:
+                status = map_status(room['status'])  # Map the status to a user-friendly message
+                reply_text = f"Room {room['room_id']} - {status}\n"
+            else:
+                reply_text = "Error with room data.\n"
         else:
             reply_text = f"Sorry, I couldn't find room {room_id}."
 
@@ -94,7 +104,6 @@ def create_reply(user_message):
         reply_text = f"You said: {user_message}"
 
     return reply_text
-
 
 def map_status(status):
     """Converts numeric status to a human-readable string."""
