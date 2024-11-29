@@ -30,7 +30,7 @@ def mongo_room_by_id(room_id):
     """Get room by ID."""
     db = mongo_connect()
     try:
-        room = db.rooms.find_one({"_id": ObjectId(room_id)})
+        room = db.rooms.find({"room_id": room_id}).sort("timestamp", -1).limit(1)
         if room:
             return dumps(room)  # Converts the BSON document to JSON
         return None
@@ -47,12 +47,12 @@ def mongo_room_list():
             db.rooms.aggregate([
                 {"$group": {
                     "_id": "$room_id",  # Group by the room_id field
-                    "latest_entry": {"$first": "$$ROOT"}  # Take the first document for each group
+                    "latest_entry": {"$last": "$$ROOT"}
                 }},
                 {"$replaceRoot": {"newRoot": "$latest_entry"}}  # Replace the root with the grouped document
             ])
         )
-        return dumps(rooms)  # Converts the BSON documents to JSON
+        return dumps(rooms)
     except Exception as e:
         logging.error(f"Error fetching unique room list by room_id: {e}")
         return None
