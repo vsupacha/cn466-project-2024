@@ -56,3 +56,16 @@ def mongo_room_list():
     except Exception as e:
         logging.error(f"Error fetching unique room list by room_id: {e}")
         return None
+    
+def mongo_room_event(room_id, condition):
+    """Get room event by room_id and condition."""
+    db = mongo_connect()
+    try:
+        room = db.rooms.find({"room_id": room_id, "status": condition})
+        if room:
+            return dumps(room)  # Converts the BSON document to JSON
+        return None
+    except Exception as e:
+        logging.error(f"Error fetching room event: {e}")
+        return None
+    
