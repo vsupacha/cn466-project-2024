@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsenui.css">
+  <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsen-css-components.min.css">
+  <script src="https://unpkg.com/onsenui/js/onsenui.min.js"></script>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+</head>
+<body>
+  <h2>Room Status</h2>
+  <form action="{{ url_for('liff.get_data') }}" method="get">
+      <select id="dropdown" name="room_id" onchange="this.form.submit()">
+          <option value="OverAll"> OverAll </option>
+          {% for room in rooms %}
+          <option value="{{ room }}"> {{ room }} </option>
+          {% endfor %}
+      </select>
+  </form>
+
+  {% if result %}
+    <table>
+      <tr>
+        <th>Room</th>
+        <th>Status</th>
+      </tr>
+      {% for room in result %}
+        <tr>
+          <td>{{ room.room_id }}</td>
+          <td>{{ room.status }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+  {% endif %}
+</body>
+</html>

@@ -38,4 +38,3 @@ def room_event():
         return jsonify({"status":"NOT FOUND"}), 404
     except Exception as err :
         return jsonify({"status":"ERROR"}), 500
-    
