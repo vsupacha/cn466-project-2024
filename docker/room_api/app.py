@@ -14,7 +14,7 @@ from routes.user import user_blueprint
 
 # app.register_blueprint(image_blueprint, url_prefix='/image')
 app.register_blueprint(room_blueprint, url_prefix='/room')
-# app.register_blueprint(line_blueprint, url_prefix='/line')
+app.register_blueprint(line_blueprint, url_prefix='/line')
 app.register_blueprint(user_blueprint, url_prefix='/user')
 
 if __name__ == '__main__':
