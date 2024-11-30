@@ -16,12 +16,12 @@
         <tbody>
             {% for user in users %}
             <tr>
-                <td>{{ user.user_id }}</td> <!-- Display user_id -->
-                <td>{{ user.name }}</td> <!-- Display name -->
-                <td><img src="{{ user.picture }}" alt="User Picture" width="50" height="50"></td> <!-- Display picture -->
-                <td>{{ user.command }}</td> <!-- Display command -->
-                <td>{{ user.timestamp }}</td> <!-- Display timestamp -->
-                <td><a href="{{ url_for('user.user_history', user_id=user.user_id) }}">View History</a></td> <!-- Action link -->
+                <td>{{ user.user_id }}</td>
+                <td>{{ user.name }}</td>
+                <td><img src="{{ user.picture }}" alt="User Picture" width="50" height="50"></td>
+                <td>{{ user.command }}</td>
+                <td>{{ user.timestamp }}</td>
+                <td><a href="{{ url_for('user.user_history', user_id=user.user_id) }}">View History</a></td>
             </tr>
             {% endfor %}
         </tbody>
