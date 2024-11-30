@@ -38,11 +38,11 @@ def get_data():
     try:
         if room_id == 'OverAll':
             room_list = json.loads(mongo_room_list())
-            result = [{"room_id": item["room_id"], "Occupied" if item["status"] =s= 1 else "Available"} for item in room_list]
+            result = [{"room_id": item["room_id"], "status": "Occupied" if item["status"] == 1 else "Available"} for item in room_list]
             return render_template('list_room.html', rooms=rooms, result=result)
         else :
             room = json.loads(mongo_room_by_id(room_id))
-            result = [{"room_id": item["room_id"], "Occupied" if item["status"] == 1 else "Available"} for item in room]
+            result = [{"room_id": item["room_id"], "status": "Occupied" if item["status"] == 1 else "Available"} for item in room]
             return render_template('list_room.html', rooms=rooms, result=result)
     except Exception as err :
         result = [{"status":"ERROR"}]
