@@ -1,28 +1,26 @@
-from flask import Blueprint ,jsonify , render_template
+from flask import Blueprint ,jsonify
 import json
-from utils.mongodb import mongo_user_command_list, mongo_get_user_history
+from typing import Union
+from utils.mongodb import mongo_user_command_list, mongo_get_user_command
 
 user_blueprint = Blueprint('user', __name__)
     
+# Routes
 @user_blueprint.route("/list", methods=["GET"])
 def user_list():
-    users_json = mongo_user_command_list()
-    try:
-        users = json.loads(users_json)
-        if users:
-            return render_template('list_user.html', users=users)
-        return jsonify({"error": "No users found"}), 404
-    except json.JSONDecodeError:
-        return jsonify({"error": "Error decoding user data"}), 500
+    """Fetch all users."""
+    users = mongo_user_command_list()
+    if users:
+        return jsonify({"users": users})
+    return jsonify({"error": "No users found"}), 404
 
-@user_blueprint.route("/history/<user_id>", methods=["GET"])
-def user_history(user_id: str):
-    user_json = mongo_get_user_history(user_id)
+@user_blueprint.route("/command/<user_id>", methods=["GET"])
+def command_latest(user_id: str, q: Union[str, None] = None):
     try:
-        users = json.loads(user_json)
-        if users:
-            return render_template('history.html', users=users)
-        return jsonify({"error": "User not found"}), 404
-    except json.JSONDecodeError:
-        return jsonify({"error": "Error decoding user data"}), 500
+        user = mongo_get_user_command(user_id)
+        if user:
+            return jsonify({"user": user})
+        return jsonify({"status":"NOT FOUND"}), 404
+    except Exception as err :
+        return jsonify({"status":"ERROR"}), 500
     

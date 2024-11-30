@@ -1,25 +1,6 @@
-from flask import request, abort, Blueprint, render_template, jsonify
-from utils.mongodb import mongo_room_list, mongo_room_by_id
-from typing import Union
+from flask import request, Blueprint, render_template, jsonify
+from utils.mongodb import mongo_room_list, mongo_room_by_id, mongo_user_command_list, mongo_get_user_history
 import json
-
-from linebot.v3 import (
-    WebhookHandler
-)
-from linebot.v3.exceptions import (
-    InvalidSignatureError
-)
-from linebot.v3.messaging import (
-    Configuration,
-    ApiClient,
-    MessagingApi,
-    ReplyMessageRequest,
-    TextMessage
-)
-from linebot.v3.webhooks import (
-    MessageEvent,
-    TextMessageContent
-)
 
 liff_blueprint = Blueprint('liff', __name__, template_folder='../templates', static_folder='../static')
 
@@ -47,3 +28,25 @@ def get_data():
     except Exception as err :
         result = [{"status":"ERROR"}]
         return render_template('list_room.html', rooms=rooms, result=result)
+    
+@liff_blueprint.route("/list", methods=["GET"])
+def user_list():
+    users_json = mongo_user_command_list()
+    try:
+        users = json.loads(users_json)
+        if users:
+            return render_template('list_user.html', users=users)
+        return jsonify({"error": "No users found"}), 404
+    except json.JSONDecodeError:
+        return jsonify({"error": "Error decoding user data"}), 500
+
+@liff_blueprint.route("/history/<user_id>", methods=["GET"])
+def user_history(user_id: str):
+    user_json = mongo_get_user_history(user_id)
+    try:
+        users = json.loads(user_json)
+        if users:
+            return render_template('history.html', users=users)
+        return jsonify({"error": "User not found"}), 404
+    except json.JSONDecodeError:
+        return jsonify({"error": "Error decoding user data"}), 500
