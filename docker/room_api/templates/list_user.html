@@ -3,6 +3,7 @@
 
 {% block css %}
   <link rel="stylesheet" href="{{ url_for('static', filename='table.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 {% endblock %}
 
 {% block content %}
@@ -10,10 +11,8 @@
     <table>
         <thead>
             <tr>
-                <th>User ID</th>
                 <th>Name</th>
                 <th>Picture</th>
-                <th>Command</th>
                 <th>Timestamp</th>
                 <th>Action</th>
             </tr>
@@ -21,10 +20,8 @@
         <tbody>
             {% for user in users %}
             <tr>
-                <td>{{ user.user_id }}</td>
                 <td>{{ user.name }}</td>
                 <td><img src="{{ user.picture }}" alt="User Picture" width="50" height="50"></td>
-                <td>{{ user.command }}</td>
                 <td>{{ user.timestamp }}</td>
                 <td><a href="{{ url_for('liff.user_history', user_id=user.user_id) }}">View History</a></td>
             </tr>
