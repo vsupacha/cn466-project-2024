@@ -1,6 +1,6 @@
 
 from flask import Blueprint ,jsonify , request
-from utils.mongodb import mongo_user_command_list, mongo_room_by_id
+from utils.mongodb import mongo_user_command_list, mongo_get_user_command
 from typing import Union
 
 
@@ -19,7 +19,7 @@ def user_list():
 @user_blueprint.route("/command/<user_id>", methods=["GET"])
 def command_latest(user_id: str, q: Union[str, None] = None):
     try:
-        user = mongo_room_by_id(user_id)
+        user = mongo_get_user_command(user_id)
         if user:
             return jsonify({"user": user})
         return jsonify({"status":"NOT FOUND"}), 404
