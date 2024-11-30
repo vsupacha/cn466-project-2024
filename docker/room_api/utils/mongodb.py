@@ -69,3 +69,44 @@ def mongo_room_event(room_id, condition):
         logging.error(f"Error fetching room event: {e}")
         return None
     
+def mongo_user_insert(user_data):
+    """Insert user data into the MongoDB database."""
+    db = mongo_connect()  # Connect to the MongoDB
+    try:
+        # Insert user data into the 'users' collection
+        db.users.insert_one(user_data)
+        logging.info("User data inserted successfully")
+    except Exception as e:
+        # Log the error if something goes wrong
+        logging.error(f"Error inserting user data: {e}")
+
+def mongo_user_command_list():
+    """Get list of unique rooms based on the room_id field."""
+    db = mongo_connect()
+    try:
+        # Aggregate rooms to find unique entries by room_id
+        command = list(
+            db.users.aggregate([
+                {"$group": {
+                    "_id": "$user_id",  # Group by the room_id field
+                    "latest_entry": {"$last": "$$ROOT"}
+                }},
+                {"$replaceRoot": {"newRoot": "$latest_entry"}}  # Replace the root with the grouped document
+            ])
+        )
+        return dumps(command)
+    except Exception as e:
+        logging.error(f"Error fetching unique room list by user_id: {e}")
+        return None
+
+def mongo_get_user_command(user_id):
+    """Get user command by userID."""
+    db = mongo_connect()
+    try:
+        users = db.users.find({"user_id": user_id}).sort("timestamp", -1).limit(1)
+        if users:
+            return dumps(users)  # Converts the BSON document to JSON
+        return None
+    except Exception as e:
+        logging.error(f"Error fetching user command: {e}")
+        return None

@@ -1,10 +1,14 @@
 import os
 from dotenv import load_dotenv
-from utils.mongodb import mongo_room_list, mongo_room_by_id
+from utils.mongodb import mongo_room_list, mongo_room_by_id, mongo_user_insert
 load_dotenv()
 
-from flask import request, abort, Blueprint, template_rendered
+from flask import request, abort, Blueprint
 import json
+
+from linebot import LineBotApi
+from linebot.exceptions import LineBotApiError
+from linebot.models import Profile
 
 from linebot.v3 import (
     WebhookHandler
@@ -31,6 +35,7 @@ line_blueprint = Blueprint('line', __name__)
 
 configuration = Configuration(access_token=os.environ['CHANNEL_ACCESS_TOKEN'])
 handler = WebhookHandler(os.environ['CHANNEL_SECRET'])
+line_bot_api = LineBotApi(os.environ['CHANNEL_ACCESS_TOKEN'])  # Correct initialization
 
 @line_blueprint.route("/callback", methods=['POST'])
 def callback():
@@ -50,8 +55,8 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessageContent)
 def handle_message(event):
-    user_message = event.message.text
-    reply_text = create_reply(user_message)
+    collect_user_command(event)
+    reply_text = create_reply(event.message.text)
 
     with ApiClient(configuration) as api_client:
         line_bot_api = MessagingApi(api_client)
@@ -61,6 +66,38 @@ def handle_message(event):
                 messages=[TextMessage(text=reply_text)]
             )
         )
+
+def collect_user_command(event):
+    # Get the user_id from the event source
+    user_id = event.source.user_id
+    timestamp = event.timestamp
+    user_message = event.message.text
+    
+    # Initialize the line bot API client
+    try:
+        # Fetch the user's profile using line_bot_api.get_profile()
+        profile = line_bot_api.get_profile(user_id)
+        display_name = profile.display_name
+        pic_url = profile.picture_url
+        status_message = profile.status_message  # Optional: fetch the status message as well
+    except LineBotApiError as e:
+        # Handle error if the profile can't be fetched
+        display_name = "Unknown"
+        pic_url = None
+        status_message = None
+        print(f"Error fetching user profile: {e}")
+
+    # Prepare user data
+    user_data = {
+        'user_id': user_id,
+        'timestamp': timestamp,
+        'name': display_name,
+        'picture': pic_url,
+        'command': user_message
+    }
+
+    # Insert the user data into MongoDB
+    mongo_user_insert(user_data)
 
 def create_reply(user_message):
     if user_message == "#list":
