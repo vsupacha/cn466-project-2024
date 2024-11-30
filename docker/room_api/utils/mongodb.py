@@ -56,3 +56,14 @@ def mongo_room_list():
     except Exception as e:
         logging.error(f"Error fetching unique room list by room_id: {e}")
         return None
+    
+def mongo_user_insert(user_data):
+    """Insert user data into the MongoDB database."""
+    db = mongo_connect()  # Connect to the MongoDB
+    try:
+        # Insert user data into the 'users' collection
+        db.users.insert_one(user_data)
+        logging.info("User data inserted successfully")
+    except Exception as e:
+        # Log the error if something goes wrong
+        logging.error(f"Error inserting user data: {e}")
