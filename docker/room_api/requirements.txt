@@ -3,3 +3,5 @@ line-bot-sdk
 uvicorn
 python-dotenv
 pymongo
+flask-wtf
+wtforms
