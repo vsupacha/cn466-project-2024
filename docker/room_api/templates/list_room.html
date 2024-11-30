@@ -1,12 +1,10 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsenui.css">
-  <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsen-css-components.min.css">
-  <script src="https://unpkg.com/onsenui/js/onsenui.min.js"></script>
-  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-</head>
-<body>
+{% extends "layout.html" %}
+
+{% block css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='table.css') }}">
+{% endblock %}
+
+{% block content %}
   <h2>Room Status</h2>
   <form action="{{ url_for('liff.get_data') }}" method="get">
       <select id="dropdown" name="room_id" onchange="this.form.submit()">
@@ -31,5 +29,4 @@
       {% endfor %}
     </table>
   {% endif %}
-</body>
-</html>
+{% endblock %}

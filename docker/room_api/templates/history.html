@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block title %}User History{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='table.css') }}">
+{% endblock %}
+
+{% block content %}
+<h1>User History</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Picture</th>
+                <th>Command</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.name }}</td>
+                <td><img src="{{ user.picture }}" alt="User Picture" width="50" height="50"></td>
+                <td>{{ user.command }}</td>
+                <td>{{ user.timestamp }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

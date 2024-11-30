@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='default.css') }}">
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    {% block css %}{% endblock %}
+</head>
+
+<body style="margin:0;">
+    <nav id="navbar" class="navbar">
+        <table>
+            <tr>
+                <td><a href="{{ url_for('liff.liff') }}" class="text-nav">ROOM</a> | <a href="{{ url_for('user.user_list') }}" class="text-nav">USER</a></td>
+            </tr>
+        </table>
+    </nav>
+
+    <div id="content">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+
+</html>
