@@ -1,3 +1,15 @@
 body {
     margin: 10px;
 }
+#content{
+    margin: 20px;  
+}
+#navbar{
+    background-color: rgb(11, 78, 11);
+    padding: 2.5%;
+}
+.text-nav{
+    font-size: large;
+    color: white;
+    text-decoration: none;
+}
