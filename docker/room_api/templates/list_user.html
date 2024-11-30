@@ -1,16 +1,8 @@
-<!-- user.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User List</title>
-</head>
-<body>
-    <h1>User List</h1>
-    
-    <!-- Table to display users -->
-    <table border="1">
+{% extends "layout.html" %}
+{% block title %}User List{% endblock %}
+{% block content %}
+<h1>User List</h1>
+    <table>
         <thead>
             <tr>
                 <th>User ID</th>
@@ -34,6 +26,4 @@
             {% endfor %}
         </tbody>
     </table>
-    
-</body>
-</html>
+{% endblock %}
