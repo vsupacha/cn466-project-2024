@@ -98,6 +98,18 @@ def mongo_user_command_list():
     except Exception as e:
         logging.error(f"Error fetching unique room list by user_id: {e}")
         return None
+    
+def mongo_get_user_history(user_id):
+    """Get user command by userID."""
+    db = mongo_connect()
+    try:
+        users = db.users.find({"user_id": user_id})
+        if users:
+            return dumps(users)  # Converts the BSON document to JSON
+        return None
+    except Exception as e:
+        logging.error(f"Error fetching user command: {e}")
+        return None
 
 def mongo_get_user_command(user_id):
     """Get user command by userID."""
@@ -109,16 +121,4 @@ def mongo_get_user_command(user_id):
         return None
     except Exception as e:
         logging.error(f"Error fetching user command: {e}")
-        return None
-
-def mongo_user_condition(user_id, condition):
-    """Get user condition by user_id and condition."""
-    db = mongo_connect()
-    try:
-        user = db.users.find({"user_id": user_id, "command": condition})
-        if user:
-            return dumps(user)  # Converts the BSON document to JSON
-        return None
-    except Exception as e:
-        logging.error(f"Error fetching user condition: {e}")
         return None
