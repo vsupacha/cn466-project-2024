@@ -14,3 +14,19 @@ body {
     color: white;
     text-decoration: none;
 }
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch; /* Ensure children elements stretch to the same width */
+}
+
+.navbar {
+    text-align: center;
+    white-space: nowrap; /* Prevent text wrapping in nav links */
+}
+
+.container > * {
+    min-width: fit-content; /* Ensure the content is not cut off */
+    width: auto;
+}
