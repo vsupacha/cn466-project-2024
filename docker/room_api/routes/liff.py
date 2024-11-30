@@ -21,7 +21,7 @@ from linebot.v3.webhooks import (
     TextMessageContent
 )
 
-liff_blueprint = Blueprint('liff', __name__, template_folder='../templates')
+liff_blueprint = Blueprint('liff', __name__, template_folder='../templates', static_folder='../static')
 liff_id = '2006527696-Xkd3WNLr'
 
 @liff_blueprint.route("/")
