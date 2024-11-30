@@ -1,5 +1,10 @@
 {% extends "layout.html" %}
 {% block title %}User List{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='table.css') }}">
+{% endblock %}
+
 {% block content %}
 <h1>User List</h1>
     <table>
