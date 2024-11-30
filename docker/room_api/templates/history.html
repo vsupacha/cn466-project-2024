@@ -1,11 +1,15 @@
 {% extends "layout.html" %}
 {% block title %}User History{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='table.css') }}">
+{% endblock %}
+
 {% block content %}
 <h1>User History</h1>
     <table>
         <thead>
             <tr>
-                <th>User ID</th>
                 <th>Name</th>
                 <th>Picture</th>
                 <th>Command</th>
@@ -15,7 +19,6 @@
         <tbody>
             {% for user in users %}
             <tr>
-                <td>{{ user.user_id }}</td>
                 <td>{{ user.name }}</td>
                 <td><img src="{{ user.picture }}" alt="User Picture" width="50" height="50"></td>
                 <td>{{ user.command }}</td>
