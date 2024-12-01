@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 from utils.mongodb import mongo_room_list, mongo_room_by_id, mongo_user_insert
 load_dotenv()
-from datetime import datetime 
+from datetime import datetime ,timezone ,timedelta
 
 from flask import request, abort, Blueprint
 import json
@@ -74,8 +74,10 @@ def collect_user_command(event):
     timestamp = event.timestamp
     user_message = event.message.text
     timestamp_int = int(timestamp)
-    covert_time = datetime.fromtimestamp(timestamp_int/1000)
-    format_time = covert_time.strftime('%Y-%m-%d %H:%M:%S')
+    covert_time = datetime.fromtimestamp(timestamp_int/1000 ,timezone.utc)
+    timezone_offset = timedelta(hours=7)
+    local_time = covert_time + timezone_offset
+    format_time = local_time.strftime('%Y-%m-%d %H:%M:%S')
 
     
     # Initialize the line bot API client
