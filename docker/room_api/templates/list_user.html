@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block title %}User List{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='table.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+{% endblock %}
+
+{% block content %}
+<h1>User List</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Picture</th>
+                <th>Timestamp</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.name }}</td>
+                <td><img src="{{ user.picture }}" alt="User Picture" width="50" height="50"></td>
+                <td>{{ user.timestamp }}</td>
+                <td><a href="{{ url_for('liff.user_history', user_id=user.user_id) }}">View History</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

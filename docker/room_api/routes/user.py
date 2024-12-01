@@ -1,10 +1,10 @@
-from flask import Blueprint ,jsonify , request
-from utils.mongodb import mongo_user_command_list, mongo_get_user_command
+from flask import Blueprint ,jsonify
+import json
 from typing import Union
+from utils.mongodb import mongo_user_command_list, mongo_get_user_command
 
-# Initialize the blueprint for image handling
 user_blueprint = Blueprint('user', __name__)
-
+    
 # Routes
 @user_blueprint.route("/list", methods=["GET"])
 def user_list():
