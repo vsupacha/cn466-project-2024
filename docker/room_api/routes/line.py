@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 from utils.mongodb import mongo_room_list, mongo_room_by_id, mongo_user_insert
 load_dotenv()
-from datetime import datetime 
+from datetime import datetime ,timezone ,timedelta
 
 from flask import request, abort, Blueprint
 import json
@@ -67,6 +67,13 @@ def collect_user_command(event):
     timestamp_int = int(timestamp)
     covert_time = datetime.fromtimestamp(timestamp_int/1000)
     format_time = covert_time.strftime('%Y-%m-%d %H:%M:%S')
+    covert_time = datetime.fromtimestamp(timestamp_int/1000 ,timezone.utc)
+    timezone_offset = timedelta(hours=7)
+    local_time = covert_time + timezone_offset
+    format_time = local_time.strftime('%Y-%m-%d %H:%M:%S')
+
+    
+    # Initialize the line bot API client
     try:
         profile = line_bot_api.get_profile(user_id)
         display_name = profile.display_name
@@ -113,6 +120,11 @@ def create_reply(user_message):
                 reply_text = "Error with room data.\n"
         else:
             reply_text = f"Sorry, I couldn't find room {room_id}."
+
+    elif user_message.startswith("#liff"):
+        room_id = user_message.split()[1]
+        reply_text = f"https://liff.line.me/2006527692-bk9DWq73"
+
     else:
         reply_text = f"You said: {user_message}"
     return reply_text

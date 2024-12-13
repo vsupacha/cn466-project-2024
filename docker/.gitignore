@@ -1,3 +1,5 @@
 ./room_collector/.env
 ./room_api/.env
 ./root_ui/.env
+
+**/.DS_Store
