@@ -121,8 +121,7 @@ def create_reply(user_message):
         else:
             reply_text = f"Sorry, I couldn't find room {room_id}."
 
-    elif user_message.startswith("#liff"):
-        room_id = user_message.split()[1]
+    elif user_message == "#liff":
         reply_text = f"https://liff.line.me/2006527692-bk9DWq73"
 
     else:
